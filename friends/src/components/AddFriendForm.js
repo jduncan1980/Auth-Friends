@@ -23,7 +23,7 @@ const useStyles = makeStyles({
 
 export default function AddFriendForm({ setFriends }) {
 	const classes = useStyles();
-	const { handleSubmit, register, errors, formState } = useForm({
+	const { handleSubmit, register, errors, formState, reset } = useForm({
 		mode: 'onChange',
 	});
 
@@ -34,6 +34,7 @@ export default function AddFriendForm({ setFriends }) {
 			.then((res) => {
 				console.log(res);
 				setFriends(res.data);
+				reset();
 			})
 			.catch((err) => {
 				console.error(err.message);
