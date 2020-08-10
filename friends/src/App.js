@@ -1,26 +1,41 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { Switch, Route, useHistory } from 'react-router-dom';
+
 import { Container } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import Login from './components/Login';
 import PrivateRoute from './components/PrivateRoute';
 import FriendsList from './components/FriendsList';
 import Navbar from './components/Navbar';
+
 const useStyles = makeStyles({
 	container: {
-		backgroundColor: 'lightgray',
 		minHeight: '100vh',
 	},
 });
 
 function App() {
-	const [checked, setChecked] = useState(
-		Boolean(localStorage.getItem('login'))
+	const history = useHistory();
+	const [loggedIn, setLoggedIn] = useState(
+		Boolean(localStorage.getItem('authToken'))
 	);
 	const classes = useStyles();
+	const [dialogOpen, setDialogOpen] = useState(false);
+	const [loading, setLoading] = useState(false);
+
+	const logOut = () => {
+		localStorage.removeItem('authToken');
+		setLoggedIn(false);
+		history.push('/');
+	};
+
 	return (
-		<Router>
-			<Navbar checked={checked} setChecked={setChecked} />
+		<React.Fragment>
+			<Navbar
+				loggedIn={loggedIn}
+				logOut={logOut}
+				setDialogOpen={setDialogOpen}
+			/>
 			<Container
 				maxWidth='lg'
 				className={classes.container}
@@ -30,12 +45,19 @@ function App() {
 			>
 				<Switch>
 					<Route exact path='/'>
-						<Login setChecked={setChecked} />
+						<Login setChecked={setLoggedIn} loggedIn={loggedIn} />
 					</Route>
-					<PrivateRoute path='/friends' component={FriendsList} />
+					<PrivateRoute
+						path='/friends'
+						component={FriendsList}
+						dialogOpen={dialogOpen}
+						setDialogOpen={setDialogOpen}
+						setLoading={setLoading}
+						loading={loading}
+					/>
 				</Switch>
 			</Container>
-		</Router>
+		</React.Fragment>
 	);
 }
 

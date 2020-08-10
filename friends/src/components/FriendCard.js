@@ -27,15 +27,22 @@ const useStyles = makeStyles({
 	},
 });
 
-export default function FriendCard({ friend, setFriends }) {
+export default function FriendCard({ friend, setFriends, setLoading }) {
 	const classes = useStyles();
 	const [dialogOpen, setDialogOpen] = useState(false);
 
 	const deleteFriend = () => {
+		setLoading(true);
 		axiosWithAuth()
 			.delete(`friends/${friend.id}`)
 			.then((res) => {
 				setFriends(res.data);
+				setLoading(false);
+			})
+			.catch((err) => {
+				console.error(err.message);
+				alert(`Something Went Wrong! Please Try Again!`);
+				setLoading(false);
 			});
 	};
 	return (
@@ -70,6 +77,7 @@ export default function FriendCard({ friend, setFriends }) {
 				setFriends={setFriends}
 				dialogOpen={dialogOpen}
 				setDialogOpen={setDialogOpen}
+				setLoading={setLoading}
 			/>
 		</React.Fragment>
 	);

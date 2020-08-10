@@ -1,7 +1,7 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import {
-	Grid,
+	Grid as Box,
 	TextField,
 	Button,
 	makeStyles,
@@ -13,8 +13,15 @@ import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles({
 	container: {
-		paddingTop: '10%',
-		height: '20%',
+		padding: '5%',
+		width: '30%',
+		background: 'white',
+		borderRadius: '20px',
+		transform: 'translateY(100%)',
+		margin: '0 auto',
+	},
+	field: {
+		margin: '20px auto',
 	},
 });
 
@@ -26,7 +33,6 @@ export default function Login({ setChecked }) {
 	});
 
 	const onSubmit = (data) => {
-		// console.log(data);
 		axios
 			.post('http://localhost:5000/api/login', data)
 			.then((res) => {
@@ -44,65 +50,58 @@ export default function Login({ setChecked }) {
 
 	if (formState.isSubmitting) {
 		return (
-			<React.Fragment>
+			<Box className={classes.container}>
 				<Typography>Loading...</Typography>
 				<CircularProgress color='secondary' />
-			</React.Fragment>
+			</Box>
 		);
 	}
 
 	return (
-		<Grid
+		<Box
 			className={classes.container}
 			component='form'
-			item
-			container
-			spacing={1}
 			onSubmit={handleSubmit(onSubmit)}
-			direction='column'
-			alignItems='center'
-			justifyContent='space-between'
 		>
-			<Grid item>
-				<TextField
-					autoFocus
-					variant='outlined'
-					type='text'
-					id='username'
-					name='username'
-					inputRef={register({ required: 'Required' })}
-					label='Username:'
-					error={errors.username ? true : false}
-					helperText={errors.username ? errors.username.message : null}
-				/>
-			</Grid>
+			<TextField
+				fullWidth={true}
+				className={classes.field}
+				autoFocus
+				variant='outlined'
+				type='text'
+				id='username'
+				name='username'
+				inputRef={register({ required: 'Required' })}
+				label='Username:'
+				error={errors.username ? true : false}
+				helperText={errors.username ? errors.username.message : null}
+			/>
 
-			<Grid item>
-				<TextField
-					inputRef={register({
-						required: 'Required',
-					})}
-					variant='outlined'
-					type='password'
-					id='password'
-					name='password'
-					label='Password:'
-					error={errors.password ? true : false}
-					helperText={errors.password ? errors.password.message : null}
-				/>
-			</Grid>
+			<TextField
+				fullWidth={true}
+				className={classes.field}
+				inputRef={register({
+					required: 'Required',
+				})}
+				variant='outlined'
+				type='password'
+				id='password'
+				name='password'
+				label='Password:'
+				error={errors.password ? true : false}
+				helperText={errors.password ? errors.password.message : null}
+			/>
 
-			<Grid item>
-				<Button
-					variant='contained'
-					color='primary'
-					size='large'
-					type='submit'
-					disabled={!formState.isValid}
-				>
-					Login
-				</Button>
-			</Grid>
-		</Grid>
+			<Button
+				fullWidth
+				variant='contained'
+				color='primary'
+				size='large'
+				type='submit'
+				disabled={!formState.isValid}
+			>
+				Login
+			</Button>
+		</Box>
 	);
 }
